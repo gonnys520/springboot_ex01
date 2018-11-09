@@ -9,15 +9,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update #삭제는 create-drop, 업데이트 update
-    
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-    
-    
+        
     generate-ddl: true
     show-sql: true
     database: mysql
-    database-platform: 
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    
       
         
