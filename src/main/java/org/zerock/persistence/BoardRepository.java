@@ -1,26 +1,25 @@
 package org.zerock.persistence;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.zerock.domain.BoardVO;
 
-public interface BoardRepository extends CrudRepository<BoardVO, Long>{
-// ID에는 기본자료형(int) 들어갈 수 없음.	
-	
-	public Page<BoardVO> findByBnoGreaterThan(Long bno, Pageable pageable);
-	
-	//findBy는 접두어
-	//페이징
-	//public List<BoardVO> findByBnoGreaterThan(Long bno, Pageable pageable);
+public interface BoardRepository extends
+CrudRepository<BoardVO, Long>, QuerydslPredicateExecutor<BoardVO>{
 
-	//검색
-	public List<BoardVO> findByTitleContaining(String keyword);
+	@Query("select b from BoardVO b where bno > 0 order by b.bno desc" )
+	public Page<BoardVO> getList(Pageable pageable);
 	
-	//'7'로 제목으로 검색해서 5개씩 페이징
-	//index타입이기 때문에...
-	public List<BoardVO> findByTitleContainingAndBnoGreaterThan
-						(String keyword, Pageable pageable);
+	@Query("select b from BoardVO b where b.title like %:title% and bno > 0 order by b.bno desc" )
+	public Page<BoardVO> getListByTitle(@Param("title")String title, Pageable pageable);
+
+	@Query("select b from BoardVO b where b.content like %:content% and bno > 0 order by b.bno desc" )
+	public Page<BoardVO> getListByContent(@Param("content")String title, Pageable pageable);
+	
+	@Query("select b from BoardVO b where b.writer like %:writer% and bno > 0 order by b.bno desc" )
+	public Page<BoardVO> getListByWriter(@Param("writer")String title, Pageable pageable);
 }
